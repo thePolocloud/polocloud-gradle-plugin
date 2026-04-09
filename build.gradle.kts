@@ -8,7 +8,12 @@ plugins {
 }
 
 group = "de.polocloud"
-version = "0.1.0-SNAPSHOT"
+version = "3.0.0-SNAPSHOT"
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
 
 repositories {
     mavenCentral()
@@ -28,40 +33,37 @@ gradlePlugin {
 
 publishing {
     publications {
-        create<MavenPublication>("maven") {
-            if (project.plugins.hasPlugin("org.jetbrains.kotlin.jvm")) {
-                from(components["java"])
+        withType<MavenPublication>().configureEach {
+            pom {
+                name.set("PoloCloud Gradle Plugin")
+                description.set("Gradle plugin for PoloCloud")
+                url.set("https://github.com/thePolocloud/polocloud")
 
-                pom {
-                    name.set("polocloud-gradle-plugin")
-                    description.set("Dynamic translation system for the PoloCloud ecosystem.")
+                licenses {
+                    license {
+                        name.set("Apache-2.0")
+                        url.set("https://www.apache.org/licenses/LICENSE-2.0")
+                    }
+                }
+
+                developers {
+                    developer {
+                        id.set("httpmarco")
+                        name.set("Mirco Lindenau")
+                        email.set("mirco.lindenau@gmx.de")
+                    }
+                }
+
+                scm {
                     url.set("https://github.com/thePolocloud/polocloud-gradle-plugin")
-
-                    licenses {
-                        license {
-                            name.set("Apache-2.0")
-                            url.set("https://www.apache.org/licenses/LICENSE-2.0")
-                        }
-                    }
-
-                    developers {
-                        developer {
-                            id.set("httpmarco")
-                            name.set("Mirco Lindenau")
-                            email.set("business-ml@gmx.de")
-                        }
-                    }
-
-                    scm {
-                        url.set("https://github.com/thePolocloud/polocloud-gradle-plugin")
-                        connection.set("scm:git:https://github.com/thePolocloud/polocloud-gradle-plugin.git")
-                        developerConnection.set("scm:git:https://github.com/thePolocloud/polocloud-gradle-plugin.git")
-                    }
+                    connection.set("scm:git:https://github.com/thePolocloud/polocloud-gradle-plugin.git")
+                    developerConnection.set("scm:git:https://github.com/thePolocloud/polocloud-gradle-plugin.git")
                 }
             }
         }
     }
 }
+
 
 dependencies {
     implementation(gradleApi())
