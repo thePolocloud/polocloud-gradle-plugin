@@ -25,6 +25,7 @@ gradlePlugin {
 dependencies {
     implementation(gradleApi())
     implementation(libs.protobuf.plugin)
+    implementation(libs.kotlin.plugin)
 }
 
 kotlin {
