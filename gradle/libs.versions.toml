@@ -1,0 +1,5 @@
+[versions]
+protobuf = "0.9.6"
+
+[libraries]
+protobuf-plugin = { module = "com.google.protobuf:protobuf-gradle-plugi", version.ref = "protobuf" }
