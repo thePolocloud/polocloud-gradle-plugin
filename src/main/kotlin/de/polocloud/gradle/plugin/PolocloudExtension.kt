@@ -1,12 +1,20 @@
 package de.polocloud.gradle.plugin
 
-abstract class PolocloudExtension {
+import org.gradle.api.model.ObjectFactory
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
+import javax.inject.Inject
 
-    var mainClass: String? = null
-    val projects = mutableListOf<String>()
-    var isProtoProject: Boolean = false
+abstract class PolocloudExtension @Inject constructor(objects: ObjectFactory) {
+
+    val mainClass: Property<String> = objects.property(String::class.java)
+
+    val projects: ListProperty<String> = objects.listProperty(String::class.java)
+
+    val publishEnabled: Property<Boolean> = objects.property(Boolean::class.java)
+        .convention(false)
 
     fun include(vararg paths: String) {
-        projects.addAll(paths)
+        projects.addAll(paths.toList())
     }
 }
