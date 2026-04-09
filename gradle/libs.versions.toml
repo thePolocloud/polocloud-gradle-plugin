@@ -1,7 +1,12 @@
 [versions]
 protobuf = "0.9.6"
 kotlin-plugin = "2.3.10"
+nexus-publish = "2.0.0"
+
 
 [libraries]
 protobuf-plugin = { module = "com.google.protobuf:protobuf-gradle-plugin", version.ref = "protobuf" }
 kotlin-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin-plugin" }
+
+[plugins]
+nexus-publish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "nexus-publish" }
