@@ -7,6 +7,7 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.MinimalExternalModuleDependency
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.bundling.Jar
+import org.gradle.kotlin.dsl.attributes
 
 class PolocloudPlugin : Plugin<Project> {
 
@@ -15,6 +16,20 @@ class PolocloudPlugin : Plugin<Project> {
             "polocloud",
             PolocloudExtension::class.java
         )
+
+        project.afterEvaluate {
+            project.tasks.withType(Jar::class.java).configureEach {
+
+                manifest {
+                    attributes(
+                        "Main-Class" to extension.mainClass,
+                        "groupId" to project.group.toString(),
+                        "artifactId" to project.name,
+                        "version" to project.version.toString()
+                    )
+                }
+            }
+        }
 
         configurePublishingIfEnabled(project, extension)
 
@@ -29,7 +44,7 @@ class PolocloudPlugin : Plugin<Project> {
         project.tasks.withType(Jar::class.java).configureEach {
             dependsOn(task)
 
-            from(task.flatMap { it.outputFile }) {
+            from(task.get().outputFile) {
                 into("/")
             }
         }

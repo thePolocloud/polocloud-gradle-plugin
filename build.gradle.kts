@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "de.polocloud"
-version = "3.0.0-SNAPSHOT"
+version = "0.13.0-SNAPSHOT"
 
 java {
     withSourcesJar()
