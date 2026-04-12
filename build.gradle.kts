@@ -1,3 +1,5 @@
+apply(from = rootProject.file("gradle/version.gradle.kts"))
+
 plugins {
     `kotlin-dsl`
     `java-gradle-plugin`
@@ -8,7 +10,7 @@ plugins {
 }
 
 group = "de.polocloud"
-version = "0.13.0-SNAPSHOT"
+// version is now set by gradle/version.gradle.kts — do NOT set it here
 
 java {
     withSourcesJar()
@@ -37,7 +39,7 @@ publishing {
             pom {
                 name.set("PoloCloud Gradle Plugin")
                 description.set("Gradle plugin for PoloCloud")
-                url.set("https://github.com/thePolocloud/polocloud")
+                url.set("https://github.com/thePolocloud/polocloud-gradle-plugin")
 
                 licenses {
                     license {
@@ -79,9 +81,7 @@ kotlin {
 nexusPublishing {
     repositories {
         sonatype {
-            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
-            snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
-
+            nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
             username.set(System.getenv("OSSRH_USERNAME"))
             password.set(System.getenv("OSSRH_PASSWORD"))
         }
