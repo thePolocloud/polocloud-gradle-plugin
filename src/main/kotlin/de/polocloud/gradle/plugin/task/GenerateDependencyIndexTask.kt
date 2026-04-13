@@ -59,9 +59,6 @@ abstract class GenerateDependencyIndexTask @Inject constructor() : DefaultTask()
             }
         }
 
-        logger.error("Executor did not finish within timeout!")
-
-
         logger.lifecycle("Collected ${results.size} dependencies total")
 
         val file = outputFile.get().asFile

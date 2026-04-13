@@ -4,6 +4,7 @@ import de.polocloud.gradle.plugin.publishing.configurePublishingIfEnabled
 import de.polocloud.gradle.plugin.task.GenerateDependencyIndexTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.artifacts.ExternalModuleDependencyBundle
 import org.gradle.api.artifacts.MinimalExternalModuleDependency
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.bundling.Jar
@@ -65,22 +66,49 @@ fun Project.polocloudRuntime(notation: Any) {
     when (notation) {
 
         is Provider<*> -> {
-            notation.map { dep ->
-                if (dep is MinimalExternalModuleDependency) {
-                    val version = dep.versionConstraint.requiredVersion
-                        .takeIf { it.isNotBlank() }
-                        ?: dep.versionConstraint.displayName
+            when (val value = notation.get()) {
+                is ExternalModuleDependencyBundle -> {
+                    value.forEach { dep ->
+                        val version = dep.versionConstraint.requiredVersion
+                            .takeIf { it.isNotBlank() }
+                            ?: dep.versionConstraint.displayName
 
-                    val gav = "${dep.module.group}:${dep.module.name}:$version"
-
-                    extension.projects.add(gav)
+                        val gav = "${dep.module.group}:${dep.module.name}:$version"
+                        extension.projects.add(gav)
+                    }
+                    dependencies.add("implementation", notation)
                 }
-            }.get()
-            dependencies.add("implementation", notation)
+
+                is MinimalExternalModuleDependency -> {
+                    val version = value.versionConstraint.requiredVersion
+                        .takeIf { it.isNotBlank() }
+                        ?: value.versionConstraint.displayName
+
+                    val gav = "${value.module.group}:${value.module.name}:$version"
+                    extension.projects.add(gav)
+                    dependencies.add("implementation", notation)
+                }
+
+                else -> {
+                    throw IllegalArgumentException(
+                        "Unsupported dependency notation type: ${value::class.java.name}. " +
+                        "Expected a MinimalExternalModuleDependency or ExternalModuleDependencyBundle Provider. " +
+                        "Use 'libs.someLibrary' or 'libs.bundles.someBundle', not an accessor group."
+                    )
+                }
+            }
         }
 
         else -> {
-            extension.projects.add(notation.toString())
+            val notationStr = notation.toString()
+            if (notationStr.count { it == ':' } < 2) {
+                throw IllegalArgumentException(
+                    "Invalid dependency notation: '$notationStr' (type: ${notation::class.java.name}). " +
+                    "Expected format 'group:artifact:version' or a version catalog Provider " +
+                    "(e.g. libs.someLibrary or libs.bundles.someBundle)."
+                )
+            }
+            extension.projects.add(notationStr)
             dependencies.add("implementation", notation)
         }
     }
