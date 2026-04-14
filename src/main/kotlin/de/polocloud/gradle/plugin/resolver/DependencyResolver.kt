@@ -32,8 +32,8 @@ class DependencyResolver(
                     file
                 )
             }.getOrElse {
-                project.logger.warn("Skipping ${id.group}:${id.name}:${id.version}")
-                return@mapNotNull null
+                project.logger.warn("Optional dependency: ${id.group}:${id.name}:${id.version}")
+                "unknown"
             }
 
             Dependency(
