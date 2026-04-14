@@ -25,7 +25,7 @@ class PolocloudPlugin : Plugin<Project> {
                     attributes(
                         "Main-Class" to extension.mainClass,
                         "groupId" to project.group.toString(),
-                        "artifactId" to project.name,
+                        "artifactId" to extension.projectName.orElse(project.name).get(),
                         "version" to project.version.toString()
                     )
                 }
